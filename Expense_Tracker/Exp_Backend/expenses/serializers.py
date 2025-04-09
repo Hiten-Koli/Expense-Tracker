@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from expenses.models import User, Expense, Income, Budget
+from django.utils.timezone import make_aware
+from datetime import datetime, time
 
 class UserRegistrationSerialier(serializers.ModelSerializer):
     password2 = serializers.CharField(style={'input_type':'password'}, write_only=True)
@@ -44,6 +46,14 @@ class IncomeSerializer(serializers.ModelSerializer):
         read_only_fields = ['user']
 
 class BudgetSerializer(serializers.ModelSerializer):
+    alert = serializers.SerializerMethodField()
     class Meta:
-        model: Budget
-        fields = '__all__'
+        model= Budget
+        fields = ['id', 'amount_limit', 'start_date', 'end_date', 'user']
+        read_only_fields = ['user']
+    def get_alert(self, obj):
+        start = make_aware(datetime.combine(obj.start_date, time.min))
+        end = make_aware(datetime.combine(obj.end_date, time.max))
+        expenses = Expense.objects.filter(user=obj.user, created_at__range=(start, end))
+        total_spent = sum(exp.amount for exp in expenses)
+        return total_spent > obj.amount_limit
