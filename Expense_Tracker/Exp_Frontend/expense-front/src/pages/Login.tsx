@@ -33,7 +33,11 @@ export const Login = () => {
 
   useEffect(() => {
     if (token) {
+      console.log(token)
       navigate("/expenses");
+    }
+    else{
+      navigate("/login");
     }
   }, [token, navigate]);
 

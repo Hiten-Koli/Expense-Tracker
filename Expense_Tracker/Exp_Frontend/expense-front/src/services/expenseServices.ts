@@ -1,4 +1,5 @@
 import api from './apiServices'
+import { budgetAlert } from './budgetServices';
 
 const API_URL= import.meta.env.VITE_API_URL;
 export const fetchExpenses = async () => {
@@ -9,6 +10,7 @@ export const fetchExpenses = async () => {
 
 export const addExpense = async (data:any) => {
   const response = await api.post(`${API_URL}expenses/`, data );
+  budgetAlert()
   return response.data;
 };
 

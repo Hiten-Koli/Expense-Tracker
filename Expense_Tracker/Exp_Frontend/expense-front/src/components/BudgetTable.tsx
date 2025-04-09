@@ -47,7 +47,6 @@ const BudgetTable = ()=>{
   };
 
   if (loading) {
-    console.log(loading)
     return (
       <Box display="flex" justifyContent="center" mt={4}>
         <CircularProgress />
@@ -82,7 +81,13 @@ const BudgetTable = ()=>{
             const isEditing = editId === item.id;
 
             return (
-              <TableRow key={item.id}>
+              <TableRow 
+                key={item.id}
+                sx={{
+                  color: new Date(item.end_date)< new Date()? 'green':'inherit',
+                  '& td': {color: new Date(item.end_date)< new Date()? 'green':'inherit',},
+                }}
+                >
                 <TableCell>
                   {isEditing ? (
                     <TextField

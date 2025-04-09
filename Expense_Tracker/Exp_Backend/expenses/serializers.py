@@ -49,7 +49,7 @@ class BudgetSerializer(serializers.ModelSerializer):
     alert = serializers.SerializerMethodField()
     class Meta:
         model= Budget
-        fields = ['id', 'amount_limit', 'start_date', 'end_date', 'user']
+        fields = ['id', 'amount_limit', 'start_date', 'end_date', 'user', 'alert']
         read_only_fields = ['user']
     def get_alert(self, obj):
         start = make_aware(datetime.combine(obj.start_date, time.min))
