@@ -11,12 +11,23 @@ const initialState:IncomeInterface = {
     loading: false,
     error: null,
 }
+interface IncomeQueryParams {
+    page?: number;
+    pageSize?: number;
+    ordering?: string;
+  }
 
-export const getIncomes = createAsyncThunk(
+export const getIncomes = createAsyncThunk<any, IncomeQueryParams>(
     "incomes/getIncomes",
-    async (_,thunkAPI)=>{
+    async ({page = 1, pageSize = 5,  ordering='' },thunkAPI)=>{
+        const params = new URLSearchParams();
+        params.append('page_num', page.toString());
+        params.append("page_size", pageSize.toString());
+        if(ordering){
+            params.append("ordering", ordering)
+        }
         try{
-            const response = await fetchIncomes();
+            const response = await fetchIncomes(params.toString());
             console.log(response);
             return response
         }catch(err:any){

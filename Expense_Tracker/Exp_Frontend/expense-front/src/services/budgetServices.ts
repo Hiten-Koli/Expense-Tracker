@@ -18,7 +18,7 @@ export const budgetAlert = async ()=>{
 export const fetchBudgets = async () => {
   const response = await api.get(`${API_URL}budgets/`);
   console.log(response.data);
-  return response.data;
+  return response.data.results;
 };
 
 export const addBudget = async (data:any) => {

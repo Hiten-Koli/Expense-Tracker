@@ -36,9 +36,6 @@ export const Login = () => {
       console.log(token)
       navigate("/expenses");
     }
-    else{
-      navigate("/login");
-    }
   }, [token, navigate]);
 
   return (

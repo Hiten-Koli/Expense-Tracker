@@ -27,24 +27,23 @@ const BudgetForm = ()=>{
         control,
         formState: { errors },
         reset,
-      } = useForm<BudgetFormValues>({
-        resolver: zodResolver(budgetSchema),
-      });
+    } = useForm<BudgetFormValues>({
+          resolver: zodResolver(budgetSchema),
+        });
     const onSubmit = (values: BudgetFormValues) => {
         const formattedValues = {
             ...values,
             start_date: values.start_date.toISOString().split("T")[0], // "YYYY-MM-DD"
-            end_date: values.end_date.toISOString().split("T")[0],     // "YYYY-MM-DD"
+            end_date: values.end_date.toISOString().split("T")[0],   
           };
-        
-          dispatch(createBudget(formattedValues));
+        dispatch(createBudget(formattedValues));
         reset();
-      };
+    };
     
     return (
     <Box
         display="flex"
-        justifyContent="center"
+        justifyContent="center" 
         alignItems="center"
         minHeight="80vh"
     >
@@ -82,7 +81,7 @@ const BudgetForm = ()=>{
                 />
               )}
             />
-
+            {/* use Controller to use DateField */}
             <Controller
               control={control}
               name="end_date"

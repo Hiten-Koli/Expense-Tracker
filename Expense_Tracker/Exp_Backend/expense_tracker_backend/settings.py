@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     "corsheaders", 
     "rest_framework_simplejwt",
     "django_celery_beat",
-
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -167,6 +167,11 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination', # PageNumberPagination
+    'PAGE_SIZE': 10,
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    'SEARCH_PARAM': 'q',
+    'ORDERING_PARAM': 'order-by',
 }
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',  # Default authentication

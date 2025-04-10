@@ -2,10 +2,11 @@ import api from './apiServices'
 import { budgetAlert } from './budgetServices';
 
 const API_URL= import.meta.env.VITE_API_URL;
-export const fetchExpenses = async () => {
-  const response = await api.get(`${API_URL}expenses/`);
-  console.log(response.data);
-  return response.data;
+export const fetchExpenses = async (params:string) => {
+  console.log(params)
+  const response = await api.get(`${API_URL}expenses/?${params}`);
+  console.log(response.data.result);
+  return response.data.result;
 };
 
 export const addExpense = async (data:any) => {

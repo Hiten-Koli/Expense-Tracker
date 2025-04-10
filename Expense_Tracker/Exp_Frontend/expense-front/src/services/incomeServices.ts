@@ -1,10 +1,11 @@
 import api from './apiServices'
 
 const API_URL= import.meta.env.VITE_API_URL;
-export const fetchIncomes = async () => {
-  const response = await api.get(`${API_URL}incomes/`);
+export const fetchIncomes = async (params:string) => {
+  console.log(params)
+  const response = await api.get(`${API_URL}incomes/?${params}`);
   console.log(response.data);
-  return response.data;
+  return response.data.result;
 };
 
 export const addIncome = async (data:any) => {

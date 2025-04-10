@@ -8,7 +8,9 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 from .models import Expense, Income, Budget
 from rest_framework.decorators import api_view, permission_classes
-
+from .pagination import CustomPagination
+from rest_framework.filters import SearchFilter, OrderingFilter
+from .filters import ExpenseFilter, IncomeFilter
 
 #Generate token manually
 def get_tokens_for_user(user):
@@ -60,22 +62,31 @@ class ExpenseView(viewsets.ModelViewSet):
     queryset= Expense.objects.all()
     serializer_class = ExpenseSerializer
     permission_classes = [IsAuthenticated]
-    
+    pagination_class = CustomPagination
+    filter_backends = [SearchFilter, OrderingFilter]
+    filter_class = ExpenseFilter
+    search_fields = ['^title', 'description','amount']
+    ordering_fields = ['amount', 'title']
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
     def get_queryset(self):
-        return Expense.objects.filter(user=self.request.user)
+        return Expense.objects.filter(user=self.request.user).order_by(self.request.query_params.get('ordering', '-id'))
     
 
 class IncomeView(viewsets.ModelViewSet):
     queryset= Income.objects.all()
     serializer_class = IncomeSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = CustomPagination
+    filter_backends = [SearchFilter, OrderingFilter]
+    filter_class = IncomeFilter
+    # search_fields = ['^title', 'description','amount']
+    ordering_fields = ['amount', 'title']
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
     def get_queryset(self):
-        return Income.objects.filter(user=self.request.user)
+        return Income.objects.filter(user=self.request.user).order_by(self.request.query_params.get('ordering', '-id'))
     
 class BudgetView(viewsets.ModelViewSet):
     queryset= Budget.objects.all()

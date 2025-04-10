@@ -29,9 +29,10 @@ api.interceptors.response.use(
     (error)=>{
         if(error.response && error.response.status === 401){
             console.log(error.response.status)
-            const dispatch = useAppDispatch();
-            dispatch(logout());
-            window.location.href=`http://localhost:5173/login`
+            // const dispatch = useAppDispatch();
+            // dispatch(logout());
+            localStorage.removeItem('token')
+            window.location.href=`http://localhost:5173/login/`
         }
         return Promise.reject(error)
     }

@@ -11,12 +11,28 @@ const initialState:ExpenseInterface = {
     loading: false,
     error: null,
 }
+interface ExpenseQueryParams {
+    page?: number;
+    pageSize?: number;
+    ordering?: string;
+  }
 
-export const getExpenses = createAsyncThunk(
+export const getExpenses = createAsyncThunk<any, ExpenseQueryParams>(
     "expenses/getExpenses",
-    async (_,thunkAPI)=>{
+    async ({page = 1, pageSize = 5,  ordering='' }, thunkAPI)=>{
+        const params = new URLSearchParams();
+        params.append('page_num', page.toString());
+        params.append("page_size", pageSize.toString());
+        if(ordering){
+            params.append("ordering", ordering)
+        }
+        // Object.entries(filters).forEach(([key, value])=>{
+        //     if(value){
+        //         params.append(key, value.toString())
+        //     }
+        // })
         try{
-            const response = await fetchExpenses();
+            const response = await fetchExpenses(params.toString());
             console.log(response);
             return response
         }catch(err:any){
