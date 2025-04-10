@@ -4,6 +4,7 @@ import { Register } from "./pages/Register";
 import Navbar from "./components/Navbar";
 import Expense from "./pages/Expense";
 import Income from "./pages/Income";
+import Budget from "./pages/Budget";
 
 const App = () => {
   return (
@@ -14,6 +15,7 @@ const App = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/expenses" element={<Expense />} />
         <Route path="/incomes" element={<Income />} />
+        <Route path="/budgets" element={<Budget />} />
       </Routes>
     </>
   );

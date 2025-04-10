@@ -32,6 +32,9 @@ const Navbar = () => {
               <Button color="inherit" component={RouterLink} to="/expenses">
                 Expenses
               </Button>
+              <Button color="inherit" component={RouterLink} to="/budgets">
+                Budgets
+              </Button>
               <Button color="inherit" onClick={handleLogout}>
                 Logout
               </Button>

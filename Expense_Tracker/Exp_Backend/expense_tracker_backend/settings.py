@@ -143,6 +143,26 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:9000",
 ]
 
+# Celery Configuration Options
+CELERY_BROKER_URL = "amqp://guest:guest@localhost:5672/"
+CELERY_TIMEZONE = "Asia/Kolkata"
+CELERY_ENABLE_UTC = False
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+
+import environ
+import os
+
+env = environ.Env()
+environ.Env.read_env()
+#Email Configurations
+EMAIL_BACKEND = env('EMAIL_BACKEND')
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',

@@ -1,12 +1,13 @@
 from rest_framework.response import Response
 from rest_framework import status, viewsets
 from rest_framework.views import APIView
-from expenses.serializers import UserRegistrationSerialier, UserLoginSerializer, UserProfileSerializer, ExpenseSerializer, IncomeSerializer
+from expenses.serializers import UserRegistrationSerialier, UserLoginSerializer, BudgetSerializer, ExpenseSerializer, IncomeSerializer
 from django.contrib.auth import authenticate
 from expenses.renderers import UserRenderer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
-from .models import Expense, Income
+from .models import Expense, Income, Budget
+from rest_framework.decorators import api_view, permission_classes
 
 
 #Generate token manually
@@ -75,3 +76,21 @@ class IncomeView(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
     def get_queryset(self):
         return Income.objects.filter(user=self.request.user)
+    
+class BudgetView(viewsets.ModelViewSet):
+    queryset= Budget.objects.all()
+    serializer_class = BudgetSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+    def get_queryset(self):
+        return Budget.objects.filter(user=self.request.user)
+    
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_budget_alert(request):
+    user = request.user
+    budgets = Budget.objects.filter(user=user)
+    serializer = BudgetSerializer(budgets, many=True)
+    return Response(serializer.data)
