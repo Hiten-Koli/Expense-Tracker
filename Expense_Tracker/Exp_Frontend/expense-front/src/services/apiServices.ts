@@ -1,15 +1,13 @@
 import axios from "axios";
-import { logout } from "../redux/slice/authSlice";
-import { useAppDispatch } from "../hooks/hooks";
 
 
 const API_URL= import.meta.env.VITE_API_URL;
 
 const api = axios.create({
     baseURL: API_URL,
-    headers: {
-        "Content-Type": "application/json",
-    },
+    // headers: {
+    //     "Content-Type": "application/json",
+    // },
 });
 
 api.interceptors.request.use(

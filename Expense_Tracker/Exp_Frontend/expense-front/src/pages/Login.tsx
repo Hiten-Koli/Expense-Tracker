@@ -47,7 +47,7 @@ export const Login = () => {
 
         {error && (
           <Typography color="error" sx={{ marginBottom: 2 }}>
-            {error}
+            {typeof error === "string" ? error :  "Invalid Credentials."}
           </Typography>
         )}
 

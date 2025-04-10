@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { fetchExpenses, addExpense, deleteExpense, updateExpense } from "../../services/expenseServices";
+import { fetchExpenses, addExpense, deleteExpense, updateExpense, addBulkExpense } from "../../services/expenseServices";
 interface ExpenseInterface{
     expenses: any[];
     loading: boolean;
@@ -75,6 +75,18 @@ export const editExpense = createAsyncThunk<any, { id: number; data: any }>(
         }
     }
 );
+export const uploadBulkExpense = createAsyncThunk(
+    "expenses/upload-file",
+    async (file:FormData, thunkAPI)=>{
+        try{
+            const response = await addBulkExpense(file)
+            return response
+        }catch(err:any){
+            return thunkAPI.rejectWithValue(err.response.data);
+        }
+
+    }
+)
 
 const expenseSlice = createSlice({
     name: 'expense',

@@ -23,3 +23,8 @@ export const updateExpense = async (id:number, data:any) => {
   const response = await api.put(`${API_URL}expenses/${id}/`, data);
   return response.data;
 };
+
+export const addBulkExpense = async (file:FormData)=>{
+  const response = await api.post(`${API_URL}expenses/upload-file/`, file);
+  return response.data
+}

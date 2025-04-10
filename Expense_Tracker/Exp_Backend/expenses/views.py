@@ -11,6 +11,9 @@ from rest_framework.decorators import api_view, permission_classes
 from .pagination import CustomPagination
 from rest_framework.filters import SearchFilter, OrderingFilter
 from .filters import ExpenseFilter, IncomeFilter
+from rest_framework.decorators import action
+from rest_framework.parsers import MultiPartParser
+import pandas as pd
 
 #Generate token manually
 def get_tokens_for_user(user):
@@ -67,6 +70,40 @@ class ExpenseView(viewsets.ModelViewSet):
     filter_class = ExpenseFilter
     search_fields = ['^title', 'description','amount']
     ordering_fields = ['amount', 'title']
+    parser_classes = [MultiPartParser]
+
+    @action(detail=False, methods=['POST'], url_path='upload-file', url_name='upload-file')
+    def upload_file (self, request):
+        file = request.FILES.get("file")
+        print(file)
+        if not file:
+            return Response({"error": "No file uploaded"}, status=status.HTTP_400_BAD_REQUEST)
+        if not file.name.endswith('.xlsx'):
+            return Response({"error": "invalid File Format, upload a Excel file with .xlsx extension."}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            df = pd.read_excel(file)
+            for col in df.columns: 
+                print(col)
+            required_columns = ['title', 'amount', 'category', 'description']
+            
+            if not all (col in df.columns for col in required_columns):
+                return Response({"error": "File must contain {required_columns} columns"}, status=status.HTTP_400_BAD_REQUEST)
+            expenses=[
+                Expense(
+                    user = request.user,
+                    title= row['title'],
+                    amount= row['amount'],
+                    category= row['category'],
+                    description= row.get('description', ''),
+                )
+                for _, row in df.iterrows()
+            ]
+            Expense.objects.bulk_create(expenses)
+            return Response({'Added Expense successfully!!'},status=status.HTTP_200_OK)
+        except Exception as err:
+            return Response({'Error:{err}'}, status = status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
     def get_queryset(self):
