@@ -13,6 +13,7 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from .filters import ExpenseFilter, IncomeFilter
 from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser
+from django_filters.rest_framework import DjangoFilterBackend
 import pandas as pd
 
 #Generate token manually
@@ -34,16 +35,11 @@ class UserRegistrationView(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-
 class UserLoginView(APIView):
     # renderer_classes = [UserRenderer]
     def post(self, request, format=None):
         serializer = UserLoginSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            # email = serializer.data.get('email')
-            # print(email)
-            # password = serializer.data.get('password')
-            # print(password)
             email = serializer.validated_data['email']
             password = serializer.validated_data['password']
             user = authenticate(request, username=email, password=password)
@@ -66,8 +62,8 @@ class ExpenseView(viewsets.ModelViewSet):
     serializer_class = ExpenseSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = CustomPagination
-    filter_backends = [SearchFilter, OrderingFilter]
-    filter_class = ExpenseFilter
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_class = ExpenseFilter
     search_fields = ['^title', 'description','amount']
     ordering_fields = ['amount', 'title']
     parser_classes = [MultiPartParser]
@@ -115,8 +111,8 @@ class IncomeView(viewsets.ModelViewSet):
     serializer_class = IncomeSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = CustomPagination
-    filter_backends = [SearchFilter, OrderingFilter]
-    filter_class = IncomeFilter
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_class = IncomeFilter
     # search_fields = ['^title', 'description','amount']
     ordering_fields = ['amount', 'title']
 

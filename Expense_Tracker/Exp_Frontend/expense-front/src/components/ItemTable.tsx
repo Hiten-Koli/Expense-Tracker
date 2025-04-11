@@ -75,8 +75,9 @@ const ItemTable = ({items, loading,error, type, labelOptions, onEdit, onDelete}:
         <TableHead>
           <TableRow>
             <TableCell><strong>Title</strong></TableCell>
+            <TableCell><strong>Created At</strong></TableCell>
             <TableCell><strong>Amount</strong></TableCell>
-            <TableCell><strong>{type === "expense" ? "Expense List" : "Income List"}</strong></TableCell>
+            <TableCell><strong>{type === "expense" ? "Category" : "Source"}</strong></TableCell>
             <TableCell><strong>Description</strong></TableCell>
             <TableCell align="center"><strong>Actions</strong></TableCell>
           </TableRow>
@@ -98,6 +99,9 @@ const ItemTable = ({items, loading,error, type, labelOptions, onEdit, onDelete}:
                   ) : (
                     item.title
                   )}
+                </TableCell>
+                <TableCell>
+                  {new Date(item.created_at).toISOString().split("T")[0]}
                 </TableCell>
                 <TableCell>
                   {isEditing ? (

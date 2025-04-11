@@ -36,13 +36,13 @@ class UserProfileSerializer(serializers.ModelSerializer):
 class ExpenseSerializer(serializers.ModelSerializer):
     class Meta:
         model=Expense
-        fields = ['id', 'title', 'amount', 'category', 'description', 'user']
+        fields = ['id', 'title', 'created_at',  'amount', 'category', 'description', 'user']
         read_only_fields = ['user']
 
 class IncomeSerializer(serializers.ModelSerializer):
     class Meta:
         model= Income
-        fields = ['id', 'title', 'amount', 'source', 'description', 'user']
+        fields = ['id', 'title', 'created_at', 'amount', 'source', 'description', 'user']
         read_only_fields = ['user']
 
 class BudgetSerializer(serializers.ModelSerializer):

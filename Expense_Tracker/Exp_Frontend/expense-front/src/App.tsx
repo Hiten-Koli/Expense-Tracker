@@ -5,12 +5,15 @@ import Navbar from "./components/Navbar";
 import Expense from "./pages/Expense";
 import Income from "./pages/Income";
 import Budget from "./pages/Budget";
+import Welcome from "./pages/Welcome";
 
 const App = () => {
+
   return (
     <>
       <Navbar />
       <Routes>
+        <Route path="/" element={<Welcome />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/expenses" element={<Expense />} />

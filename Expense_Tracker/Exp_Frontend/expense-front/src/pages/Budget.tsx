@@ -3,6 +3,7 @@ import BudgetForm from "../components/BudgetForm";
 import BudgetTable from "../components/BudgetTable";
 
 const Budget=()=>{
+  console.log(Grid)
     return (
         <Container maxWidth="lg" sx={{ mt: 4 }}>
           <Typography variant="h4" align="center" gutterBottom>

@@ -15,16 +15,24 @@ interface ExpenseQueryParams {
     page?: number;
     pageSize?: number;
     ordering?: string;
+    start_date?:string;
+    end_date?:string;
   }
 
 export const getExpenses = createAsyncThunk<any, ExpenseQueryParams>(
     "expenses/getExpenses",
-    async ({page = 1, pageSize = 5,  ordering='' }, thunkAPI)=>{
+    async ({page = 1, pageSize = 5,  ordering='', start_date='', end_date='' }, thunkAPI)=>{
         const params = new URLSearchParams();
         params.append('page_num', page.toString());
         params.append("page_size", pageSize.toString());
         if(ordering){
             params.append("ordering", ordering)
+        }
+        if(start_date){
+            params.append("start_date", start_date)
+        }
+        if(end_date){
+            params.append("end_date", end_date)
         }
         // Object.entries(filters).forEach(([key, value])=>{
         //     if(value){
