@@ -5,10 +5,11 @@ import {TextField,Button, Card,CardContent,Typography,Box} from "@mui/material";
 import { useAppDispatch } from "../hooks/hooks";
 import { createBudget } from "../redux/slice/budgetSlice";
 import { DateField } from '@mui/x-date-pickers/DateField';
+import dayjs from "dayjs";
 
 const budgetSchema = z
     .object({
-        amount_limit: z.number({ invalid_type_error: "Amount is required" }).positive("Amount must be positive"),
+        amount_limit: z.coerce.number({ invalid_type_error: "Amount is required" }).positive("Amount must be positive"),
         start_date : z.coerce.date({ message:"Invalid date string!"}),
         end_date: z.coerce.date({ message:"Invalid date string!"}),
     })
@@ -33,11 +34,11 @@ const BudgetForm = ()=>{
     const onSubmit = (values: BudgetFormValues) => {
         const formattedValues = {
             ...values,
-            start_date: values.start_date.toISOString().split("T")[0], // "YYYY-MM-DD"
-            end_date: values.end_date.toISOString().split("T")[0],   
+            start_date: dayjs(values.start_date).format("YYYY-MM-DD"), // "YYYY-MM-DD"
+            end_date: dayjs(values.end_date).format("YYYY-MM-DD"),   
           };
         dispatch(createBudget(formattedValues));
-        reset();
+        reset(); //Clears all form inputs
     };
     
     return (
@@ -55,54 +56,54 @@ const BudgetForm = ()=>{
 
             <form onSubmit={handleSubmit(onSubmit)} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
             
-            <TextField
-                label="Amount"
-                type="number"
-                fullWidth
-                {...register("amount_limit", { valueAsNumber: true })}
-                error={!!errors.amount_limit}
-                helperText={errors.amount_limit?.message}
-            />
-            <Controller
-              control={control}
-              name="start_date"
-              render={({ field }) => (
-                <DateField
-                  {...field}
-                  label="Start Date"
-                  format="YYYY-MM-DD"
+              <TextField
+                  label="Amount"
+                  type="number"
                   fullWidth
-                  slotProps={{
-                    textField: {
-                      error: !!errors.start_date,
-                      helperText: errors.start_date?.message,
-                    },
-                  }}
-                />
-              )}
-            />
-            {/* use Controller to use DateField */}
-            <Controller
-              control={control}
-              name="end_date"
-              render={({ field }) => (
-                <DateField
-                  {...field}
-                  label="End Date"
-                  format="YYYY-MM-DD"
-                  fullWidth
-                  slotProps={{
-                    textField: {
-                      error: !!errors.end_date,
-                      helperText: errors.end_date?.message,
-                    },
-                  }}
-                />
-              )}
-            />
-            <Button variant="contained" color="primary" type="submit" fullWidth>
-                Add Budget
-            </Button>
+                  {...register("amount_limit", { valueAsNumber: true })}
+                  error={!!errors.amount_limit}
+                  helperText={errors.amount_limit?.message}
+              />
+              <Controller
+                control={control}
+                name="start_date"
+                render={({ field }) => (
+                  <DateField
+                    {...field}
+                    label="Start Date"
+                    format="YYYY-MM-DD"
+                    fullWidth
+                    slotProps={{
+                      textField: {
+                        error: !!errors.start_date,
+                        helperText: errors.start_date?.message,
+                      },
+                    }}
+                  />
+                )}
+              />
+              {/* use Controller to use DateField */}
+              <Controller
+                control={control}
+                name="end_date"
+                render={({ field }) => (
+                  <DateField
+                    {...field}
+                    label="End Date"
+                    format="YYYY-MM-DD"
+                    fullWidth
+                    slotProps={{
+                      textField: {
+                        error: !!errors.end_date,
+                        helperText: errors.end_date?.message,
+                      },
+                    }}
+                  />
+                )}
+              />
+              <Button variant="contained" color="primary" type="submit" fullWidth>
+                  Add Budget
+              </Button>
             </form>
         </CardContent>
         </Card>

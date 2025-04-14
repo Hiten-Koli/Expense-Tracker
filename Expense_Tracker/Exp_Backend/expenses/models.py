@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
-# from django.utils import timezone
 # Create your models here.
 
 #Custom User Manager
@@ -127,6 +126,7 @@ class Budget(models.Model):
     end_date = models.DateField()  # Budget ends at this date
     created_at = models.DateTimeField(auto_now_add=True)  # Timestamp when created
     updated_at = models.DateTimeField(auto_now=True)  # Timestamp when modified
-
+    notified = models.BooleanField(default=False)
+    
     def __str__(self):
         return f"{self.user.name} - {self.amount_limit} from {self.start_date} to {self.end_date}"

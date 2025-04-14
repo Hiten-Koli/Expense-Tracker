@@ -1,11 +1,8 @@
 import { Table, TableHead, TableRow, TableCell, TableBody, Paper, TableContainer, Typography, IconButton, CircularProgress, Box,TextField} from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import SaveIcon from "@mui/icons-material/Save";
-import { useEffect, useState } from "react";
-import CloseIcon from '@mui/icons-material/Close';
+import { useEffect} from "react";
 import { useAppDispatch, useAppSelector } from "../hooks/hooks";
-import { editBudget, getBudgets, removeBudget } from "../redux/slice/budgetSlice";
+import {  getBudgets, removeBudget } from "../redux/slice/budgetSlice";
 
 const BudgetTable = ()=>{
     const { budgets, loading, error } = useAppSelector((state) => state.budget);
@@ -15,36 +12,38 @@ const BudgetTable = ()=>{
         dispatch(getBudgets());
     }, [dispatch]);
 
-    const [editId, setEditId] = useState<number | null>(null);
-    const [editData, setEditData] = useState({
-        amount_limit: 0,
-        start_date: "",
-        end_date: "",
-    });
+    // const [editId, setEditId] = useState<number | null>(null);
+    // const [editData, setEditData] = useState({
+    //     amount_limit: 0,
+    //     start_date: "",
+    //     end_date: "",
+    // });
 
-  const handleEditClick = (item: any) => {
-    setEditId(item.id);
-    setEditData({
-      amount_limit: item.amount,
-      start_date: item.start_date,
-      end_date: item.end_date,
-    });
-  };
+  // const handleEditClick = (item: any) => {
+  //   setEditId(item.id);
+  //   setEditData({
+  //     amount_limit: item.amount_limit,
+  //     start_date: item.start_date,
+  //     end_date: item.end_date,
+  //   });
+  // };
 
-  const handleSaveClick = (id: number) => {
-    const data:any =  editData
-    dispatch(editBudget({id, data}));
-    setEditId(null); 
-  };
+  // const handleSaveClick = (id: number) => {
+  //   const data:any =  editData
+  //   dispatch(editBudget({id, data}));
+  //   setEditId(null); 
+  // };
   const handleDelete = (id:number)=>{
-    dispatch(removeBudget(id))
-    setEditId(null)
+    dispatch(removeBudget(id)).then(()=>{
+      dispatch(getBudgets());
+    })
+    // setEditId(null)
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setEditData((prev) => ({ ...prev, [name]: value }));
-  };
+  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { name, value } = e.target;
+  //   setEditData((prev) => ({ ...prev, [name]: value }));
+  // };
 
   if (loading) {
     return (
@@ -78,68 +77,28 @@ const BudgetTable = ()=>{
         </TableHead>
         <TableBody>
           {(budgets ?? []).map((item) => {
-            const isEditing = editId === item.id;
+            // const isEditing = editId === item.id;
 
             return (
               <TableRow 
                 key={item.id}
                 sx={{
-                  color: new Date(item.end_date)< new Date()? 'green':'inherit',
-                  '& td': {color: new Date(item.end_date)< new Date()? 'green':'inherit',},
+                  color: item.notified===true?
+                    'red': new Date(item.end_date)< new Date() ? 'green':'inherit',
+                  '& td': {color: item.notified===true?
+                    'red': new Date(item.end_date)< new Date() ? 'green':'inherit',},
                 }}
                 >
                 <TableCell>
-                  {isEditing ? (
-                    <TextField
-                      name="amount"
-                      value={editData.amount_limit}
-                      onChange={handleChange}
-                      size="small"
-                      type="number"
-                    />
-                  ) : (
-                    item.amount_limit
-                  )}
+                    {item.amount_limit}
                 </TableCell>
                 <TableCell>
-                  {isEditing ? (
-                    <TextField
-                      name="description"
-                      value={editData.start_date}
-                      onChange={handleChange}
-                      size="small"
-                    />
-                  ) : (
-                    item.start_date
-                  )}
+                    {item.start_date}
                 </TableCell>
                 <TableCell>
-                  {isEditing ? (
-                    <TextField
-                      name="description"
-                      value={editData.end_date}
-                      onChange={handleChange}
-                      size="small"
-                    />
-                  ) : (
-                    item.end_date
-                  )}
+                    {item.end_date}
                 </TableCell>
                 <TableCell align="center">
-                  {isEditing ? (
-                    <IconButton color="primary" onClick={() => handleSaveClick(item.id)}>
-                      <SaveIcon />
-                    </IconButton>
-                  ) : (
-                    <IconButton color="info" onClick={() => handleEditClick(item)}>
-                      <EditIcon />
-                    </IconButton>
-                  )}
-                  {isEditing &&
-                    <IconButton color="warning" onClick={() => setEditId(null)}>
-                      <CloseIcon />
-                    </IconButton>
-                  }
                   <IconButton
                     color="error"
                     onClick={() => handleDelete(item.id)}

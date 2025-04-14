@@ -17,7 +17,6 @@ export const getBudgets = createAsyncThunk(
     async (_,thunkAPI)=>{
         try{
             const response = await fetchBudgets();
-            console.log(response);
             return response
         }catch(err:any){
             return thunkAPI.rejectWithValue(err.response.data);
@@ -40,7 +39,6 @@ export const removeBudget = createAsyncThunk(
     async (id: number, thunkAPI)=>{
         try{
             const response = await deleteBudget(id);
-            console.log(id)
             return response;
         }catch(err:any){
             return thunkAPI.rejectWithValue(err.response.data);
@@ -52,7 +50,6 @@ export const editBudget = createAsyncThunk<any, { id: number; data: any }>(
     async ({id, data}:{id: number, data:any}, thunkAPI)=>{
         try{
             const response = await updateBudget(id, data);
-            console.log(id)
             return response;
         }catch(err:any){
             return thunkAPI.rejectWithValue(err.response.data);

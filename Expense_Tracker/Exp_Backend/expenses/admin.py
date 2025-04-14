@@ -29,10 +29,6 @@ class UserAdmin(BaseUserAdmin):
     ordering = ["email",'id']
     filter_horizontal = []
 
-
-# Now register the new UserAdmin...
-# myModels = [User, UserAdmin,Expense, Income,Budget]
-# admin.site.register(myModels)
 admin.site.register(User, UserAdmin)
 admin.site.register(Expense)
 admin.site.register(Income)

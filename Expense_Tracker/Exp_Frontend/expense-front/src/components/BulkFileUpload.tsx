@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {Button, Card,CardContent,Typography,Box} from "@mui/material";
 import { useAppDispatch } from "../hooks/hooks";
-import { uploadBulkExpense } from "../redux/slice/expenseSlice";
+import {  uploadBulkExpense } from "../redux/slice/expenseSlice";
 import { useEffect, useState } from "react";
 const bulkFileSchema = z.object({
     file: z
@@ -13,7 +13,6 @@ const bulkFileSchema = z.object({
           fileList instanceof FileList &&
           fileList.length > 0 &&
           [
-            "application/vnd.ms-excel",
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
           ].includes(fileList[0].type),
         {
@@ -50,9 +49,8 @@ const bulkFileSchema = z.object({
   
     const onSubmit = (values: BulkFileValues) => {
       const formData = new FormData();
-      formData.append("file", values.file[0]); // 🟢 append the actual file directly with key "file"
-  
-      dispatch(uploadBulkExpense(formData));
+      formData.append("file", values.file[0]); //  append the actual file directly with key "file"
+      dispatch(uploadBulkExpense(formData))
       reset();
       setSelectedFileName(null);
     };

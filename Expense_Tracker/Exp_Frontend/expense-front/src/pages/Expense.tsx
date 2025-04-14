@@ -26,7 +26,15 @@ const Expense = () => {
   const [end_date, setEndDate] = useState<Dayjs|null>(null);
   
   const onSubmit = (values: TransactionFormValues) => {
-    dispatch(createExpense(values));
+    dispatch(createExpense(values)).then(()=>{
+      dispatch(getExpenses({
+        page, 
+        pageSize,  
+        ordering, 
+        start_date: start_date? start_date.format("YYYY-MM-DD"):undefined, 
+        end_date: end_date? end_date.format("YYYY-MM-DD"): undefined
+      }));
+    });
   };
 
   useEffect(() => {    
@@ -169,10 +177,17 @@ const Expense = () => {
             type="expense"
             labelOptions={categories}
             onEdit={(id, data) => dispatch(editExpense({ id, data }))}
-            onDelete={(id) => dispatch(removeExpense(id))}
+            onDelete={(id) => dispatch(removeExpense(id)).then(()=>{
+              dispatch(getExpenses({
+                page, 
+                pageSize,  
+                ordering, 
+                start_date: start_date? start_date.format("YYYY-MM-DD"):undefined, 
+                end_date: end_date? end_date.format("YYYY-MM-DD"): undefined
+              }));
+            })}
           />
         </Paper>
-
         {/* Page Selector */}
         <Box display="flex" justifyContent="center" mt={2}>
           <TextField

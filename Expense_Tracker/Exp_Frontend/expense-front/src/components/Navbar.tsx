@@ -2,7 +2,6 @@ import { AppBar, Toolbar, Typography, Button, Box, IconButton,} from "@mui/mater
 import { useAppDispatch, useAppSelector } from "../hooks/hooks";
 import { logout } from "../redux/slice/authSlice";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
-import MenuIcon from "@mui/icons-material/Menu"; 
   
 const Navbar = () => {
     const dispatch = useAppDispatch();
@@ -17,11 +16,11 @@ const Navbar = () => {
     return (
       <AppBar position="static" color="primary">
         <Toolbar>
-          <IconButton edge="start" color="inherit" sx={{ mr: 2 }}>
+          {/* <IconButton edge="start" color="inherit" sx={{ mr: 2 }}>
             <MenuIcon />
-          </IconButton>
+          </IconButton> */}
           <Typography variant="h6" component={RouterLink} to="/" color="inherit" sx={{ textDecoration: 'none', flexGrow: 1 }}>
-            Expense Tracker
+            SuDhan
           </Typography>
   
           {token ? (

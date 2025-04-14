@@ -1,11 +1,13 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { TextField, Button, Typography, Box, Paper, Container } from "@mui/material";
+import { TextField, Button, Typography, Paper, Container, CircularProgress } from "@mui/material";
 import { register as registerUser } from "../redux/slice/authSlice";
 import { useAppDispatch, useAppSelector } from "../hooks/hooks";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { clearError } from "../redux/slice/authSlice";
+import axios, { AxiosError } from "axios";
 
 // Zod schema
 const registerSchema = z
@@ -21,29 +23,70 @@ const registerSchema = z
   });
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
-
+const API_URL= import.meta.env.VITE_API_URL;
 export const Register = () => {
   const dispatch = useAppDispatch();
   const navigate= useNavigate();
   const { loading, error, success } = useAppSelector((state) => state.auth);
+  
+  const [otp, setOtp] = useState<string>("");
+  const [isOtpSent, setIsOtpSent] = useState<boolean>(false);
+  const [emailForOtp, setEmailForOtp] = useState<string>("");
+  const [isVerified, setIsVerified] = useState<boolean>(false);
+  const [emailError, setEmailError] = useState<string>("");
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    getValues,
+    watch,
   } = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
   });
-
+  const emailValue = watch('email');
   const onSubmit = (data: RegisterFormValues) => {
-    // const { password2, ...formData } = data;
-    dispatch(registerUser(data));
+    if(isVerified){
+      dispatch(registerUser(data));
+    }
   };
   useEffect(() => {
     if (success) {
       navigate("/login"); 
     }
   }, [success, navigate]);
+  useEffect(() => {
+    dispatch(clearError()); 
+  }, [dispatch]);
+
+    //Email verification 
+    const handleSendOtp = async()=>{  
+      const email = getValues("email")
+      setEmailForOtp(email)
+      setEmailError("")
+      try{
+        await axios.post(`${API_URL}send-otp/`, {email:email});
+        setIsOtpSent(true)
+      }
+      catch(err){
+        const error = err as AxiosError<{ error: string }>;
+        const serverMessage = error.response?.data?.error || "Could not send OTP !!";
+        setEmailError(serverMessage)
+      } 
+    }
+    const handleVerifyOtp = async()=>{
+      setEmailError("")
+      try{
+        const response = await axios.post(`${API_URL}verify-otp/`,{email:emailForOtp, otp});
+        if(response.data.verified){
+          setIsVerified(true)
+        } 
+      }catch (err){
+        const error = err as AxiosError<{ error: string }>;
+        const serverMessage = error.response?.data?.error || "Could not send OTP !!";
+        setEmailError(serverMessage)
+      }
+    }
 
   return (
     <Container maxWidth="sm">
@@ -67,7 +110,6 @@ export const Register = () => {
             error={!!errors.username}
             helperText={errors.username?.message}
           />
-
           <TextField
             fullWidth
             label="Email"
@@ -76,8 +118,49 @@ export const Register = () => {
             {...register("email")}
             error={!!errors.email}
             helperText={errors.email?.message}
-          />
-
+            disabled={isOtpSent}
+          /> 
+          {emailError &&
+            <Typography color="error" mt={2}>
+                {emailError}
+            </Typography>
+          }
+          {!isOtpSent?
+            (<Button
+              fullWidth
+              variant="contained"
+              color="primary"
+              onClick={handleSendOtp}
+              disabled={!emailValue}
+              sx={{ mt: 2 }}
+            >
+              Send OTP
+            </Button>
+            ): !isVerified?( 
+            <>
+              <TextField
+                fullWidth
+                label="OTP"
+                type="text"
+                margin="normal"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+              />
+              <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                onClick={handleVerifyOtp}
+                sx={{ mt: 2 }}
+              >
+                Verify OTP
+              </Button>
+            </>
+           ) : (
+            <Typography color="green" mt={2}>
+              ✅ Email Verified
+            </Typography>
+          )}
           <TextField
             fullWidth
             label="Password"
@@ -87,7 +170,6 @@ export const Register = () => {
             error={!!errors.password}
             helperText={errors.password?.message}
           />
-
           <TextField
             fullWidth
             label="Confirm Password"
@@ -97,16 +179,20 @@ export const Register = () => {
             error={!!errors.password2}
             helperText={errors.password2?.message}
           />
-
+          {!isVerified &&
+            <Typography color="red" mt={2}>
+                Verify your email to register!
+            </Typography>
+          }
           <Button
             fullWidth
             variant="contained"
             color="primary"
             type="submit"
-            disabled={loading}
+            disabled={loading || !isVerified}
             sx={{ mt: 2 }}
           >
-            Register
+            {loading ? <CircularProgress size={24} /> : "Register"}
           </Button>
         </form>
       </Paper>

@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { fetchExpenses, addExpense, deleteExpense, updateExpense, addBulkExpense } from "../../services/expenseServices";
+
 interface ExpenseInterface{
     expenses: any[];
     loading: boolean;
@@ -34,14 +35,8 @@ export const getExpenses = createAsyncThunk<any, ExpenseQueryParams>(
         if(end_date){
             params.append("end_date", end_date)
         }
-        // Object.entries(filters).forEach(([key, value])=>{
-        //     if(value){
-        //         params.append(key, value.toString())
-        //     }
-        // })
         try{
             const response = await fetchExpenses(params.toString());
-            console.log(response);
             return response
         }catch(err:any){
             return thunkAPI.rejectWithValue(err.response.data);
@@ -54,6 +49,7 @@ export const createExpense = createAsyncThunk(
         try{
             const response = await addExpense(data);
             return response;
+
         }catch(err:any){
             return thunkAPI.rejectWithValue(err.response.data);
         }
@@ -64,7 +60,6 @@ export const removeExpense = createAsyncThunk(
     async (id: number, thunkAPI)=>{
         try{
             const response = await deleteExpense(id);
-            console.log(id)
             return response;
         }catch(err:any){
             return thunkAPI.rejectWithValue(err.response.data);
@@ -76,7 +71,6 @@ export const editExpense = createAsyncThunk<any, { id: number; data: any }>(
     async ({id, data}:{id: number, data:any}, thunkAPI)=>{
         try{
             const response = await updateExpense(id, data);
-            console.log(id)
             return response;
         }catch(err:any){
             return thunkAPI.rejectWithValue(err.response.data);

@@ -13,12 +13,12 @@ app = Celery('expense_tracker_backend')
 #   should have a `CELERY_` prefix.
 app.config_from_object('django.conf:settings', namespace='CELERY')
 
-app.conf.beat_schedule = {
-    'send-email-everyday':{
-        'task': 'expenses.tasks.check_budget_limit',
-        'schedule': crontab(hour = 17, minute= 5 )
-    }
-}
+# app.conf.beat_schedule = {
+#     'send-email-everyday':{
+#         'task': 'expenses.tasks.check_budget_limit',
+#         'schedule': crontab(hour = 17, minute= 3 )
+#     }
+# }
 
 # Load task modules from all registered Django apps.
 app.autodiscover_tasks()

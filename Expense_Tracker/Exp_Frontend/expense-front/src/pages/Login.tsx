@@ -3,7 +3,7 @@ import { Box, Button, Container, TextField, Typography, CircularProgress, Paper,
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { login } from "../redux/slice/authSlice";
+import { clearError, login } from "../redux/slice/authSlice";
 import { useAppDispatch, useAppSelector } from "../hooks/hooks";
 import { useNavigate } from "react-router-dom";
 
@@ -33,10 +33,12 @@ export const Login = () => {
 
   useEffect(() => {
     if (token) {
-      console.log(token)
       navigate("/expenses");
     }
   }, [token, navigate]);
+  useEffect(() => {
+      dispatch(clearError()); 
+    }, [dispatch]);
 
   return (
     <Container maxWidth="sm">

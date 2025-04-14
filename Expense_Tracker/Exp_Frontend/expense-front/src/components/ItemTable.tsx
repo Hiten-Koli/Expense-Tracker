@@ -14,7 +14,6 @@ interface Props {
   onDelete: (id: number) => void;
 }
 const ItemTable = ({items, loading,error, type, labelOptions, onEdit, onDelete}:Props) => {
-  // 
 
   const [editId, setEditId] = useState<number | null>(null);
   const [editData, setEditData] = useState({
@@ -50,7 +49,6 @@ const ItemTable = ({items, loading,error, type, labelOptions, onEdit, onDelete}:
   };
 
   if (loading) {
-    console.log(loading)
     return (
       <Box display="flex" justifyContent="center" mt={4}>
         <CircularProgress />
@@ -85,7 +83,6 @@ const ItemTable = ({items, loading,error, type, labelOptions, onEdit, onDelete}:
         <TableBody>
           {(items ?? []).map((item) => {
             const isEditing = editId === item.id;
-
             return (
               <TableRow key={item.id}>
                 <TableCell>
@@ -120,7 +117,7 @@ const ItemTable = ({items, loading,error, type, labelOptions, onEdit, onDelete}:
                   {isEditing ? (
                     <TextField
                       select
-                      name="category"
+                      name="label"
                       value={editData.label}
                       onChange={handleChange}
                       size="small"

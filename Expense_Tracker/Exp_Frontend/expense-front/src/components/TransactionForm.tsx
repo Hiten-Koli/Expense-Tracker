@@ -5,7 +5,7 @@ import {TextField,Button,MenuItem,Card,CardContent,Typography,Box,} from "@mui/m
 
 const transactionSchema = z.object({
   title: z.string().min(1, "Title is required"),
-  amount: z.number({ invalid_type_error: "Amount is required" }).positive("Amount must be positive"),
+  amount: z.coerce.number({ invalid_type_error: "Amount is required" }).positive("Amount must be positive"),
   label : z.string().min(1, "This field is required"),
   description: z.string().min(1, "Description is required"),
 });

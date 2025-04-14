@@ -24,7 +24,15 @@ const Income = () => {
   const [start_date, setStartDate] = useState<Dayjs|null>(null);
   const [end_date, setEndDate] = useState<Dayjs|null>(null);
   const onSubmit = (values: TransactionFormValues) => {
-    dispatch(createIncome(values));
+    dispatch(createIncome(values)).then(()=>{
+      dispatch(getIncomes({
+        page, 
+        pageSize,  
+        ordering, 
+        start_date: start_date? start_date.format("YYYY-MM-DD"):undefined, 
+        end_date: end_date? end_date.format("YYYY-MM-DD"): undefined
+      }));
+    });
   };
 
   useEffect(() => {    
@@ -157,7 +165,15 @@ const Income = () => {
                 type= {"income"}
                 labelOptions= {sources}
                 onEdit= {(id, data)=>dispatch(editIncome({id, data}))}
-                onDelete= {(id)=>dispatch(removeIncome(id))}
+                onDelete= {(id)=>dispatch(removeIncome(id)).then(()=>{
+                  dispatch(getIncomes({
+                    page, 
+                    pageSize,  
+                    ordering, 
+                    start_date: start_date? start_date.format("YYYY-MM-DD"):undefined, 
+                    end_date: end_date? end_date.format("YYYY-MM-DD"): undefined
+                  }));
+                })}
                 />
             </Paper>
             <Box display="flex" justifyContent="center" mt={2}>

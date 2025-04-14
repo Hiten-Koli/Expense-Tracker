@@ -22,7 +22,6 @@ export const login = createAsyncThunk(
     async ({email, password}:{email:string, password:string}, thunkAPI)=>{
         try{
             const response = await loginUser(email,password);
-            console.log(`Resposne Access: ${response.token.access}`)
             localStorage.setItem("token", response.token.access)
             return response
         }catch(err:any){
@@ -37,6 +36,7 @@ export const register = createAsyncThunk(
             const response = await registerUser(username, email, password, password2);
             return response;
         }catch(err:any){
+            console.log(err.response.data)
             return thunkAPI.rejectWithValue(err.response.data);
         }
     }
@@ -50,6 +50,9 @@ const authSlice = createSlice({
             localStorage.removeItem("token");
             state.user = null;
             state.token= null;
+        },
+        clearError:(state)=>{
+            state.error = null;
         }
     },
     extraReducers:(builder) =>{
@@ -61,7 +64,6 @@ const authSlice = createSlice({
             .addCase(login.fulfilled, (state, action)=>{
                 state.loading = false;
                 state.user = action.payload.user;
-                console.log(action.payload.token.access)
                 state.token = action.payload.token.access
                 state.error = null;
             })
@@ -79,10 +81,16 @@ const authSlice = createSlice({
             })
             .addCase(register.rejected, (state, action)=>{
                 state.loading = false;
-                state.error = action.payload as string;
+                const payload = action.payload as any;
+                if(payload?.email){
+                    state.error = payload.email[0]
+                }else{
+                    state.error="Registration failed. Please try again.";
+                }
             })
     },
 })
 
 export const {logout} = authSlice.actions;
+export const {clearError} = authSlice.actions;
 export default authSlice.reducer;

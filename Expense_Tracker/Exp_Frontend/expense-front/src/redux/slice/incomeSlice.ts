@@ -36,7 +36,6 @@ export const getIncomes = createAsyncThunk<any, IncomeQueryParams>(
         }
         try{
             const response = await fetchIncomes(params.toString());
-            console.log(response);
             return response
         }catch(err:any){
             return thunkAPI.rejectWithValue(err.response.data);
@@ -59,7 +58,6 @@ export const removeIncome = createAsyncThunk(
     async (id: number, thunkAPI)=>{
         try{
             const response = await deleteIncome(id);
-            console.log(id)
             return response;
         }catch(err:any){
             return thunkAPI.rejectWithValue(err.response.data);
@@ -71,7 +69,6 @@ export const editIncome = createAsyncThunk<any, { id: number; data: any }>(
     async ({id, data}:{id: number, data:any}, thunkAPI)=>{
         try{
             const response = await updateIncome(id, data);
-            console.log(id)
             return response;
         }catch(err:any){
             return thunkAPI.rejectWithValue(err.response.data);

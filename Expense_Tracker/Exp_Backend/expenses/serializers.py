@@ -28,11 +28,6 @@ class UserLoginSerializer(serializers.ModelSerializer):
         model = User
         fields= ['email','password']
 
-class UserProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['id', 'email','name']
-
 class ExpenseSerializer(serializers.ModelSerializer):
     class Meta:
         model=Expense
@@ -49,7 +44,7 @@ class BudgetSerializer(serializers.ModelSerializer):
     alert = serializers.SerializerMethodField()
     class Meta:
         model= Budget
-        fields = ['id', 'amount_limit', 'start_date', 'end_date', 'user', 'alert']
+        fields = ['id', 'amount_limit', 'start_date', 'end_date', 'user', 'alert', 'notified']
         read_only_fields = ['user']
     def get_alert(self, obj):
         start = make_aware(datetime.combine(obj.start_date, time.min))
